@@ -1,5 +1,5 @@
 import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
-
+import type { ReactElement } from 'react'
 const { useEffect, useState, useRef } = React
 
 /**
