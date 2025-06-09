@@ -1,5 +1,4 @@
 import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
-import type { ReactElement } from 'react'
 const { useEffect, useState, useRef } = React
 
 /**
@@ -21,6 +20,17 @@ interface AnimationState {
   phase: number
   progress: number
   fadeProgress: number
+}
+
+interface ConversationHandler {
+  sendChoice: (choiceId: string) => void
+  sendSlots: (slots: Record<string, any>) => void
+}
+
+interface NlxAiMetamorphosisComponentProps {
+  data: NlxAiMetamorphosisData
+  conversationHandler: ConversationHandler
+  enabled?: boolean
 }
 
 // Computing evolution timeline with clean icons
@@ -316,7 +326,7 @@ const COMPUTING_ERAS = [
   },
 ]
 
-const NlxAiMetamorphosisComponent: CustomModalityComponent<NlxAiMetamorphosisData> = ({
+const NlxAiMetamorphosisComponent: React.FC<NlxAiMetamorphosisComponentProps> = ({
   data,
   conversationHandler,
   enabled = true,
@@ -387,7 +397,7 @@ const NlxAiMetamorphosisComponent: CustomModalityComponent<NlxAiMetamorphosisDat
             conversationHandler.sendChoice(data.onCompleteChoiceId)
           } else {
             conversationHandler.sendSlots({ 
-              metamorphosisComplete: true,
+              nlxAnimationComplete: true,
               finalPhase: COMPUTING_ERAS[COMPUTING_ERAS.length - 1].name,
               completedAt: new Date().toISOString() 
             })
@@ -484,7 +494,7 @@ const NlxAiMetamorphosisComponent: CustomModalityComponent<NlxAiMetamorphosisDat
         alignItems: 'center',
         gap: '8px',
       }}>
-        {COMPUTING_ERAS.map((era, index) => (
+        {COMPUTING_ERAS.map((_, index) => (
           <div
             key={index}
             style={{
