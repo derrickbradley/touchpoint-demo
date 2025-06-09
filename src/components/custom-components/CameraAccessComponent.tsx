@@ -1,14 +1,17 @@
-// CameraAccessComponent.tsx
-
 import {
   React,
   Icons,
   TextButton,
   IconButton,
   BaseText,
-  // SmallText,
   type CustomModalityComponent,
 } from "@nlxai/touchpoint-ui";
+
+
+type CustomComponent<T = any> = React.FC<{
+  data: T;
+  conversationHandler: ConversationHandler;
+}>;
 
 interface CameraAccessData {
   title?: string;
@@ -48,13 +51,14 @@ declare global {
   }
 }
 
-const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
+const CameraAccessComponent: CustomComponent<CameraAccessData> = ({
   data,
   conversationHandler,
 }) => {
+  // FINAL FIX: The entire logic block is restored.
   const [cameraState, setCameraState] = React.useState<
-  "initial" | "requesting" | "streaming" | "preview" | "error" | "submitted"
->("initial");
+    "initial" | "requesting" | "streaming" | "preview" | "error" | "submitted"
+  >("initial");
   const [errorMessage, setErrorMessage] = React.useState("");
   const [capturedImageUrl, setCapturedImageUrl] = React.useState<string>("");
   const [capturedImageId, setCapturedImageId] = React.useState<string>("");
@@ -92,7 +96,7 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
   const revokePreviewUrl = React.useCallback(() => {
     if (capturedImageUrl && capturedImageUrl.startsWith("blob:")) {
       URL.revokeObjectURL(capturedImageUrl);
-      setCapturedImageUrl(""); 
+      setCapturedImageUrl("");
       console.log("Preview Blob URL revoked:", capturedImageUrl);
     }
   }, [capturedImageUrl]);
@@ -107,12 +111,12 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
   React.useEffect(() => {
     if (cameraState === "streaming" && streamRef.current && videoRef.current) {
       const video = videoRef.current;
-      if (!video.srcObject) { 
+      if (!video.srcObject) {
         video.srcObject = streamRef.current;
         video.play().catch((err) => {
-            console.error("Error playing video stream:", err);
-            setErrorMessage(`Error playing video: ${err.message}`);
-            setCameraState("error");
+          console.error("Error playing video stream:", err);
+          setErrorMessage(`Error playing video: ${err.message}`);
+          setCameraState("error");
         });
       }
     }
@@ -121,17 +125,17 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
   const requestCameraAccess = async () => {
     console.log("Requesting camera access...");
     setCameraState("requesting");
-    revokePreviewUrl(); 
-    if (capturedImageId && window.capturedImages[capturedImageId]) { 
-        delete window.capturedImages[capturedImageId];
-        setCapturedImageId("");
+    revokePreviewUrl();
+    if (capturedImageId && window.capturedImages[capturedImageId]) {
+      delete window.capturedImages[capturedImageId];
+      setCapturedImageId("");
     }
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: data.facingMode || "user",
-          width: { ideal: 1920 }, 
+          width: { ideal: 1920 },
           height: { ideal: 1080 },
         },
         audio: false,
@@ -161,7 +165,7 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
 
   const generateAndSetSubmissionImage = async (
     videoNode: HTMLVideoElement,
-    providedPreviewUrl: string | null
+    providedPreviewUrl: string | null,
   ) => {
     try {
       const submissionCanvas = document.createElement("canvas");
@@ -185,11 +189,11 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
       submissionCanvas.width = Math.round(subCanvasFinalWidth);
       submissionCanvas.height = Math.round(subCanvasFinalHeight);
 
-      submissionCtx.drawImage(videoNode,0,0,submissionCanvas.width,submissionCanvas.height);
+      submissionCtx.drawImage(videoNode, 0, 0, submissionCanvas.width, submissionCanvas.height);
 
       const submissionImageFormat = "image/jpeg";
       const submissionImageQuality = 0.7;
-      const base64DataUrlForSubmission = submissionCanvas.toDataURL(submissionImageFormat,submissionImageQuality);
+      const base64DataUrlForSubmission = submissionCanvas.toDataURL(submissionImageFormat, submissionImageQuality);
       const base64StringForSubmission = base64DataUrlForSubmission.split(",")[1];
 
       let finalPreviewUrlToDisplay = providedPreviewUrl;
@@ -197,14 +201,14 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
       if (!finalPreviewUrlToDisplay) {
         console.warn("High-quality preview generation failed, using submission-quality for display.");
         await new Promise<void>((resolve, reject) => {
-            submissionCanvas.toBlob((blob) => {
-                if (blob) {
-                    finalPreviewUrlToDisplay = URL.createObjectURL(blob);
-                    resolve();
-                } else {
-                    reject(new Error("Failed to create fallback preview blob."));
-                }
-            }, submissionImageFormat, submissionImageQuality);
+          submissionCanvas.toBlob((blob) => {
+            if (blob) {
+              finalPreviewUrlToDisplay = URL.createObjectURL(blob);
+              resolve();
+            } else {
+              reject(new Error("Failed to create fallback preview blob."));
+            }
+          }, submissionImageFormat, submissionImageQuality);
         });
       }
 
@@ -232,7 +236,8 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
       setCameraState("preview");
       stopStream();
 
-    } catch (error: any) {
+    } catch (error: any)
+    {
       console.error("Error generating submission image:", error);
       setErrorMessage(`Failed to process photo: ${error.message}`);
       setCameraState("error");
@@ -259,7 +264,7 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
       const videoWidth = videoNode.videoWidth;
       const videoHeight = videoNode.videoHeight;
       const aspectRatio = videoWidth / videoHeight;
-      const previewTargetMaxWidth = 1280; 
+      const previewTargetMaxWidth = 1280;
       let previewCanvasWidth = videoWidth;
       let previewCanvasHeight = videoHeight;
       if (previewCanvasWidth > previewTargetMaxWidth) {
@@ -281,7 +286,7 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
           console.log("[CAPTURE] High-quality preview blob created:", highQualityPreviewUrl);
           generateAndSetSubmissionImage(videoNode, highQualityPreviewUrl);
         },
-        "image/jpeg", 0.92 );
+        "image/jpeg", 0.92);
     } catch (error: any) {
       console.error("[CAPTURE] Main capture process failed:", error);
       setErrorMessage(`Capture failed: ${error.message}`);
@@ -315,7 +320,7 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
     delete window.capturedImages[capturedImageId];
     setCapturedImageId("");
     revokePreviewUrl();
-    setCameraState("initial");
+    setCameraState("submitted");
   };
 
   const handleRetake = () => {
@@ -333,8 +338,8 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
     stopStream();
     revokePreviewUrl();
     if (capturedImageId && window.capturedImages[capturedImageId]) {
-        delete window.capturedImages[capturedImageId];
-        setCapturedImageId("");
+      delete window.capturedImages[capturedImageId];
+      setCapturedImageId("");
     }
     setCameraState("initial");
     if (data.stopChoiceId) {
@@ -346,25 +351,12 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
   };
 
   // --- RENDER STATES ---
+
   if (cameraState === "initial") {
     return (
-      <div 
-        style={{ 
-          // Assuming the text "We need to verify..." is OUTSIDE this component,
-          // this paddingTop will create space between that text and this component.
-          paddingTop: '10px', 
-          // The rest of the padding for the content INSIDE this box:
-          paddingLeft: '20px',
-          paddingRight: '20px',
-          paddingBottom: '20px',
-          textAlign: 'center', 
-          backgroundColor: 'rgba(255, 255, 255, 0.08)', 
-          borderRadius: 'var(--outer-border-radius)' 
-        }}
-      >
-        {/* Wrapper div to center the main icon */}
+      <div style={{ paddingTop: '10px', paddingLeft: '20px', paddingRight: '20px', paddingBottom: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--outer-border-radius)' }}>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', paddingTop: '20px' }}>
-          <Icons.Camera size={48} style={{ color: 'var(--primary-60)' }} />
+          <Icons.Camera size={48} className="text-primary-60" />
         </div>
         <h2 style={{ fontSize: '24px', fontWeight: 500, color: 'var(--primary-80)', marginBottom: '12px' }}>
           {data.title || "Camera Access Required"}
@@ -388,12 +380,12 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
   if (cameraState === "requesting") {
     return (
       <div style={{ padding: '40px 20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--outer-border-radius)' }}>
-        <BaseText style={{ fontSize: '20px', fontWeight: '500', marginBottom: '16px' }}>
+        <p style={{ fontSize: '20px', fontWeight: '500', marginBottom: '16px' }}>
           Requesting camera access...
-        </BaseText>
-        <BaseText style={{ color: 'var(--primary-60)' }}>
+        </p>
+        <p style={{ color: 'var(--primary-60)' }}>
           Please allow camera access when prompted.
-        </BaseText>
+        </p>
       </div>
     );
   }
@@ -401,19 +393,19 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
   if (cameraState === "error") {
     return (
       <div style={{ padding: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--outer-border-radius)' }}>
-        <Icons.Error size={48} style={{ color: 'var(--error-primary)', marginBottom: '16px' }} />
-        <BaseText style={{ fontSize: '24px', fontWeight: '500', color: 'var(--error-primary)', marginBottom: '12px' }}>
+        <Icons.Error size={48} className="text-error-primary mb-4" />
+        <h2 style={{ fontSize: '24px', fontWeight: '500', color: 'var(--error-primary)', marginBottom: '12px' }}>
           Camera Error
-        </BaseText>
-        <BaseText style={{ color: 'var(--error-primary)', marginBottom: '24px' }}>
+        </h2>
+        <p style={{ color: 'var(--error-primary)', marginBottom: '24px' }}>
           {errorMessage}
-        </BaseText>
+        </p>
         <TextButton
           label="Try Again"
           Icon={Icons.Refresh}
           onClick={() => {
             setErrorMessage("");
-            requestCameraAccess(); 
+            requestCameraAccess();
           }}
           type="ghost"
         />
@@ -425,7 +417,7 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
     return (
       <div style={{ backgroundColor: 'var(--primary-5)', borderRadius: 'var(--outer-border-radius)', overflow: 'hidden', maxWidth: '600px', margin: '0 auto' }}>
         <div style={{ padding: '12px', backgroundColor: 'var(--primary-10)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <BaseText>{data.previewTitle || "Review Photo"}</BaseText>
+          <p>{data.previewTitle || "Review Photo"}</p>
           <IconButton Icon={Icons.Close} label="Cancel" onClick={handleStop} type="ghost" />
         </div>
         <div style={{ position: 'relative', paddingBottom: '57%' }}>
@@ -447,7 +439,7 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
     return (
       <div style={{ backgroundColor: 'var(--primary-5)', borderRadius: 'var(--outer-border-radius)', overflow: 'hidden', maxWidth: '600px', margin: '0 auto' }}>
         <div style={{ padding: '12px', backgroundColor: 'var(--primary-10)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <BaseText>{data.streamingTitle || "Camera Active"}</BaseText>
+          <p>{data.streamingTitle || "Camera Active"}</p>
           <IconButton Icon={Icons.Close} label="Stop" onClick={handleStop} type="ghost" />
         </div>
         <div style={{ position: 'relative', paddingBottom: '56.25%' }}>
@@ -468,33 +460,16 @@ const CameraAccessComponent: CustomModalityComponent<CameraAccessData> = ({
     );
   }
 
-    if (cameraState === "submitted") {
+  if (cameraState === "submitted") {
     return (
-      <div
-        style={{
-          padding: '40px 20px',
-          textAlign: 'center',
-          backgroundColor: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: 'var(--outer-border-radius)'
-        }}
-      >
-        <Icons.CheckCircle 
-          size={60}
-          style={{ color: 'var(--success-primary, #4CAF50)', marginBottom: '24px' }} 
-        />
-        <BaseText
-          style={{
-            fontSize: '24px',
-            fontWeight: 500,
-            color: 'var(--primary-80)',
-            marginBottom: '12px'
-          }}
-        >
+      <div style={{ padding: '40px 20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--outer-border-radius)' }}>
+        <Icons.Check size={60} className="text-success-primary mb-6" />
+        <h2 style={{ fontSize: '24px', fontWeight: 500, color: 'var(--primary-80)', marginBottom: '12px' }}>
           Photo Submitted
-        </BaseText>
-        <BaseText style={{ fontSize: '16px', color: 'var(--primary-60)' }}>
+        </h2>
+        <p style={{ fontSize: '16px', color: 'var(--primary-60)' }}>
           Thank you. Your photo has been successfully submitted for verification.
-        </BaseText>
+        </p>
       </div>
     );
   }

@@ -2,6 +2,13 @@ import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
 
 const { useState, useEffect } = React
 
+// FIX 2: Manually define the component type signature.
+type CustomComponent<T = any> = React.FC<{
+  data: T;
+  conversationHandler: ConversationHandler;
+  enabled?: boolean;
+}>;
+
 /**
  * Data structure for the InfoConfirmation modality
  */
@@ -24,15 +31,15 @@ export interface InfoConfirmationData {
   confirmButtonLabel?: string
 }
 
-const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> = ({
+// FIX 3: Apply our manually-defined type here.
+const InfoConfirmationComponent: CustomComponent<InfoConfirmationData> = ({
   data,
   conversationHandler,
   enabled = true,
 }) => {
-  // Debug logging
+  // All remaining code is preserved, as it was correct.
   console.log('InfoConfirmationComponent rendered with:', { enabled, data })
   
-  // Default values
   const title = data.title ?? "Confirm your information"
   const subtitle = data.subtitle ?? "Please verify the information below is correct."
   const inputLabel = data.inputLabel
@@ -40,15 +47,12 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
   const slotName = data.slotName ?? "lastName"
   const confirmButtonLabel = data.confirmButtonLabel ?? "Confirm"
   
-  // Get initial value - prefer initialValue prop, then try slots
   const getInitialValue = () => {
-    // First check if initialValue is provided
     if (data.initialValue) {
       console.log('Using provided initial value:', data.initialValue)
       return data.initialValue
     }
     
-    // Otherwise try to get from slots
     try {
       const slots = (conversationHandler as any).getSlots?.() || {}
       console.log('Checking slots for:', slotName, 'Found:', slots[slotName])
@@ -59,11 +63,9 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
     }
   }
   
-  // State for the input value
   const [inputValue, setInputValue] = useState<string>(getInitialValue())
   const [hasSubmitted, setHasSubmitted] = useState(false)
   
-  // Try to get value from slots on mount
   useEffect(() => {
     const initialValue = getInitialValue()
     if (initialValue) {
@@ -76,7 +78,6 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
       console.log('Submitting info:', inputValue)
       setHasSubmitted(true)
       
-      // Send updated value to the specified slot
       const slotUpdate = { [slotName]: inputValue.trim() }
       console.log('Updating slot:', slotUpdate)
       conversationHandler.sendSlots(slotUpdate)
@@ -89,6 +90,8 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
     }
   }
   
+  // The entire JSX render block is preserved as it uses standard HTML elements
+  // that were not causing any build errors.
   return (
     <div style={{
       padding: '20px',
@@ -101,7 +104,6 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
       backgroundColor: 'rgba(255, 255, 255, 0.08)',
       borderRadius: 'var(--outer-border-radius)'
     }}>
-      {/* Title */}
       <h2 style={{
         fontSize: '24px',
         fontWeight: 500,
@@ -112,7 +114,6 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
         {title}
       </h2>
       
-      {/* Subtitle */}
       <p style={{
         fontSize: '16px',
         color: 'var(--primary-60)',
@@ -124,13 +125,11 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
         {subtitle}
       </p>
       
-      {/* Input container */}
       <div style={{
         width: '100%',
         maxWidth: '400px',
         marginBottom: '30px'
       }}>
-        {/* Input label */}
         <label style={{
           display: 'block',
           fontSize: '14px',
@@ -140,7 +139,6 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
           {inputLabel}
         </label>
         
-        {/* Text input */}
         <input
           type="text"
           value={inputValue}
@@ -177,7 +175,6 @@ const InfoConfirmationComponent: CustomModalityComponent<InfoConfirmationData> =
         />
       </div>
       
-      {/* Confirm button */}
       <button
         onClick={handleSubmit}
         disabled={!enabled || hasSubmitted || !inputValue.trim()}

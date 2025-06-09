@@ -1,3 +1,6 @@
+// vite.config.ts
+// REVERTED TO ORIGINAL STATE
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 

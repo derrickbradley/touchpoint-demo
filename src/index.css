@@ -1,3 +1,13 @@
+/* src/index.css */
+
+/*
+  FIX: The @tailwind directives MUST be the very first lines in the file.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* All of your custom CSS rules now come AFTER the Tailwind directives. */
 * {
   margin: 0;
   padding: 0;

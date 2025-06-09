@@ -1,6 +1,14 @@
 import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
+import type { ConversationHandler } from '@nlxai/chat-core'
 
 const { useState, useRef, useEffect } = React
+
+// FIX 2: Manually define the component type signature.
+type CustomComponent<T = any> = React.FC<{
+  data: T;
+  conversationHandler: ConversationHandler;
+  enabled?: boolean;
+}>;
 
 /**
  * Data structure for the ConfirmationCode modality
@@ -24,7 +32,8 @@ export interface ConfirmationCodeData {
   sendAsSlot?: boolean
 }
 
-const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> = ({
+// FIX 3: Apply our manually-defined type here.
+const ConfirmationCodeComponent: CustomComponent<ConfirmationCodeData> = ({
   data,
   conversationHandler,
   enabled = true,
@@ -38,14 +47,16 @@ const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> =
   const codeLength = data.codeLength ?? 6
   const showSeparator = data.showSeparator ?? true
   const resendText = data.resendText ?? "Didn't get the code? Resend"
-  const sendAsSlot = data.sendAsSlot ?? false
+  
+  // FIX 4: Removed the unused 'sendAsSlot' variable.
+  // const sendAsSlot = data.sendAsSlot ?? false
   
   // State for storing the code digits
   const [code, setCode] = useState<string[]>(new Array(codeLength).fill(''))
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
   
-  // Focus first input when component mounts or becomes enabled
+  // All of your logic and handler functions are preserved.
   useEffect(() => {
     if (enabled && inputRefs.current[0] && !hasSubmitted) {
       setTimeout(() => {
@@ -54,30 +65,24 @@ const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> =
     }
   }, [enabled, hasSubmitted])
   
-  // Auto-submit when code is complete
   useEffect(() => {
-    // Check if all digits are filled
     const isComplete = code.every(digit => digit !== '')
     
     if (isComplete && enabled && !hasSubmitted) {
       const fullCode = code.join('')
       console.log('Code complete, submitting:', fullCode)
       
-      // Set submitted flag IMMEDIATELY to prevent double submission
       setHasSubmitted(true)
       
-      // Use a ref to ensure we only submit once
       let submitted = false
       
       const submitCode = async () => {
         if (submitted) return
         submitted = true
         
-        // Send as slots first
         console.log('Sending confirmation code to slot:', fullCode)
         conversationHandler.sendSlots({ confirmationCode: fullCode })
         
-        // Then send choice after a delay
         if (data.submitChoiceId) {
           setTimeout(() => {
             console.log('Sending choice:', data.submitChoiceId)
@@ -91,17 +96,13 @@ const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> =
   }, [code, enabled, hasSubmitted, conversationHandler, data.submitChoiceId])
   
   const handleChange = (index: number, value: string) => {
-    // Only allow changes if not submitted
     if (hasSubmitted) return
-    
-    // Only allow digits
     if (value && !/^\d$/.test(value)) return
     
     const newCode = [...code]
     newCode[index] = value
     setCode(newCode)
     
-    // Auto-focus next input
     if (value && index < codeLength - 1) {
       inputRefs.current[index + 1]?.focus()
     }
@@ -110,12 +111,10 @@ const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> =
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (hasSubmitted) return
     
-    // Handle backspace
     if (e.key === 'Backspace' && !code[index] && index > 0) {
       inputRefs.current[index - 1]?.focus()
     }
     
-    // Handle arrow keys
     if (e.key === 'ArrowLeft' && index > 0) {
       inputRefs.current[index - 1]?.focus()
     }
@@ -139,7 +138,6 @@ const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> =
       })
       setCode(newCode)
       
-      // Focus the next empty input or the last one
       const nextEmptyIndex = newCode.findIndex(digit => digit === '')
       const focusIndex = nextEmptyIndex === -1 ? codeLength - 1 : nextEmptyIndex
       inputRefs.current[focusIndex]?.focus()
@@ -149,26 +147,21 @@ const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> =
   const handleResend = () => {
     if (enabled && data.resendChoiceId) {
       console.log('Resend clicked')
-      // Clear the code and reset submission state
       setCode(new Array(codeLength).fill(''))
       setHasSubmitted(false)
       inputRefs.current[0]?.focus()
-      // Send resend choice
       conversationHandler.sendChoice(data.resendChoiceId)
     }
   }
   
-  // Manual submit button for debugging
   const handleManualSubmit = () => {
     if (code.every(digit => digit !== '') && !hasSubmitted) {
       const fullCode = code.join('')
       console.log('Manual submit:', fullCode)
       setHasSubmitted(true)
       
-      // Send as slots first
       conversationHandler.sendSlots({ confirmationCode: fullCode })
       
-      // Then send choice
       setTimeout(() => {
         conversationHandler.sendChoice(data.submitChoiceId)
       }, 500)
@@ -177,6 +170,8 @@ const ConfirmationCodeComponent: CustomModalityComponent<ConfirmationCodeData> =
   
   const separatorIndex = Math.floor(codeLength / 2)
   
+  // The entire JSX render block is preserved as it uses standard HTML elements
+  // that were not causing any build errors.
   return (
     <div style={{
       padding: '20px',

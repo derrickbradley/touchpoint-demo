@@ -425,7 +425,7 @@ const NlxAiMetamorphosisComponent: React.FC<NlxAiMetamorphosisComponentProps> = 
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: 'transparent',
     borderRadius: '20px',
     overflow: 'hidden',
   }
