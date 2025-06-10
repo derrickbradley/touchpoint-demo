@@ -38,7 +38,7 @@ export default function ChatWidget() {
             ProductSelection: ProductComponent,
             CameraAccess: CameraAccessComponent,
             PongGame: PongGameComponent,
-            NlxLoader: NlxLoaderComponent
+            NlxAiMetamorphosisComponent: NlxLoaderComponent
 
           },
           colorMode: "dark",

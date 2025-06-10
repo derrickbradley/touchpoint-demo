@@ -1,13 +1,7 @@
-import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
+import { React } from '@nlxai/touchpoint-ui'
+import type { CustomComponent } from '../custom-component-types';
 
 const { useState, useRef, useEffect } = React
-
-// FIX 2: Manually define the component type signature.
-type CustomComponent<T = any> = React.FC<{
-  data: T;
-  conversationHandler: ConversationHandler;
-  enabled?: boolean;
-}>;
 
 /**
  * Data structure for the ConfirmPhoneNumber modality
@@ -31,7 +25,6 @@ export interface ConfirmPhoneNumberData {
   confirmButtonText?: string
 }
 
-// All of your internal logic is preserved as it was correct.
 const phoneFormats: Record<string, { pattern: RegExp; format: string; flag: string; digits: number; dialingCode: string }> = {
   US: { pattern: /(\d{3})(\d{3})(\d{4})/, format: '($1) $2-$3', flag: '🇺🇸', digits: 10, dialingCode: '+1' },
   CA: { pattern: /(\d{3})(\d{3})(\d{4})/, format: '($1) $2-$3', flag: '🇨🇦', digits: 10, dialingCode: '+1' },
@@ -129,13 +122,12 @@ const detectCountryFromPhoneNumber = (phoneNumber: string): string => {
   return 'US'
 }
 
-// FIX 3: Apply our manually-defined type here.
 const ConfirmPhoneNumberComponent: CustomComponent<ConfirmPhoneNumberData> = ({
   data,
   conversationHandler,
   enabled = true,
 }) => {
-  // All remaining code is preserved, as it was correct.
+
   console.log('ConfirmPhoneNumberComponent rendered with:', { enabled, data })
   
   const title = data.title ?? "Confirm your phone number"

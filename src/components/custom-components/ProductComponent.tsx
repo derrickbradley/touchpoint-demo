@@ -1,18 +1,8 @@
 import {
   React,
   Icons,
-  BaseText,
-  CustomCard,
-  CustomCardRow,
-  type CustomModalityComponent,
 } from "@nlxai/touchpoint-ui"
-
-// Manually define the component type signature.
-type CustomComponent<T = any> = React.FC<{
-  data: T;
-  conversationHandler: ConversationHandler;
-  enabled?: boolean;
-}>;
+import type { CustomComponent } from '../custom-component-types';
 
 export interface ProductComponentData {
   question?: string;

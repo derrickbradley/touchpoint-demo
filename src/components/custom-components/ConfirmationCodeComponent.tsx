@@ -1,14 +1,8 @@
-import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
-import type { ConversationHandler } from '@nlxai/chat-core'
+import { React } from '@nlxai/touchpoint-ui'
+
+import type { CustomComponent } from '../custom-component-types';
 
 const { useState, useRef, useEffect } = React
-
-// FIX 2: Manually define the component type signature.
-type CustomComponent<T = any> = React.FC<{
-  data: T;
-  conversationHandler: ConversationHandler;
-  enabled?: boolean;
-}>;
 
 /**
  * Data structure for the ConfirmationCode modality

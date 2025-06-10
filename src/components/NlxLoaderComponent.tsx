@@ -1,5 +1,6 @@
-import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
+import { React } from '@nlxai/touchpoint-ui'
 const { useEffect, useState, useRef } = React
+import type { CustomComponent } from './custom-component-types';
 
 /**
  * Data structure for the NlxAiMetamorphosis modality
@@ -20,17 +21,6 @@ interface AnimationState {
   phase: number
   progress: number
   fadeProgress: number
-}
-
-interface ConversationHandler {
-  sendChoice: (choiceId: string) => void
-  sendSlots: (slots: Record<string, any>) => void
-}
-
-interface NlxAiMetamorphosisComponentProps {
-  data: NlxAiMetamorphosisData
-  conversationHandler: ConversationHandler
-  enabled?: boolean
 }
 
 // Computing evolution timeline with clean icons
@@ -326,7 +316,7 @@ const COMPUTING_ERAS = [
   },
 ]
 
-const NlxAiMetamorphosisComponent: React.FC<NlxAiMetamorphosisComponentProps> = ({
+const NlxAiMetamorphosisComponent: CustomComponent<NlxAiMetamorphosisData> = ({
   data,
   conversationHandler,
   enabled = true,
@@ -546,4 +536,5 @@ const NlxAiMetamorphosisComponent: React.FC<NlxAiMetamorphosisComponentProps> = 
   )
 }
 
-export default NlxAiMetamorphosisComponent
+const NlxLoaderComponent = NlxAiMetamorphosisComponent;
+export default NlxLoaderComponent;

@@ -3,15 +3,10 @@ import {
   Icons,
   TextButton,
   IconButton,
-  BaseText,
-  type CustomModalityComponent,
+  // type CustomModalityComponent,
 } from "@nlxai/touchpoint-ui";
 
-
-type CustomComponent<T = any> = React.FC<{
-  data: T;
-  conversationHandler: ConversationHandler;
-}>;
+import type { CustomComponent } from '../custom-component-types';
 
 interface CameraAccessData {
   title?: string;

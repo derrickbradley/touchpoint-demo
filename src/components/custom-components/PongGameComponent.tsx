@@ -2,17 +2,12 @@ import {
   React,
   Icons,
   TextButton,
-  IconButton,
+//  IconButton,
   BaseText,
   SmallText,
-  type CustomModalityComponent,
 } from "@nlxai/touchpoint-ui"
 
-type CustomComponent<T = any> = React.FC<{
-  data: T;
-  conversationHandler: ConversationHandler;
-  enabled?: boolean;
-}>;
+import type { CustomComponent } from '../custom-component-types';
 
 interface PongGameData {
   gameSpeed?: number;

@@ -1,13 +1,7 @@
-import { React, type CustomModalityComponent } from '@nlxai/touchpoint-ui'
+import { React } from '@nlxai/touchpoint-ui'
+import type { CustomComponent } from '../custom-component-types';
 
 const { useState, useEffect } = React
-
-// FIX 2: Manually define the component type signature.
-type CustomComponent<T = any> = React.FC<{
-  data: T;
-  conversationHandler: ConversationHandler;
-  enabled?: boolean;
-}>;
 
 /**
  * Data structure for the InfoConfirmation modality
@@ -31,13 +25,12 @@ export interface InfoConfirmationData {
   confirmButtonLabel?: string
 }
 
-// FIX 3: Apply our manually-defined type here.
 const InfoConfirmationComponent: CustomComponent<InfoConfirmationData> = ({
   data,
   conversationHandler,
   enabled = true,
 }) => {
-  // All remaining code is preserved, as it was correct.
+
   console.log('InfoConfirmationComponent rendered with:', { enabled, data })
   
   const title = data.title ?? "Confirm your information"
