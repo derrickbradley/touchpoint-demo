@@ -457,12 +457,33 @@ const CameraAccessComponent: CustomComponent<CameraAccessData> = ({
 
   if (cameraState === "submitted") {
     return (
-      <div style={{ padding: '40px 20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--outer-border-radius)' }}>
-        <Icons.Check size={60} className="text-success-primary mb-6" />
-        <h2 style={{ fontSize: '24px', fontWeight: 500, color: 'var(--primary-80)', marginBottom: '12px' }}>
+      <div
+        style={{
+          padding: '20px 20px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: 'var(--outer-border-radius)',
+          minHeight: '250px'
+        }}
+      >
+        {/*
+          FIX: Reverting to Icons.Check, which we know exists.
+          The 'CheckCircleIcon' was an incorrect guess and caused the crash.
+          The animation is removed for now to solve the crash first.
+        */}
+        <Icons.Check 
+          size={60}
+          className="text-success-primary mb-6"
+        />
+        
+        <h2 style={{ fontSize: '24px', fontWeight: 500, color: 'var(--primary-80)', marginBottom: '12px', textAlign: 'center' }}>
           Photo Submitted
         </h2>
-        <p style={{ fontSize: '16px', color: 'var(--primary-60)' }}>
+        
+        <p style={{ fontSize: '16px', color: 'var(--primary-60)', textAlign: 'center' }}>
           Thank you. Your photo has been successfully submitted for verification.
         </p>
       </div>
