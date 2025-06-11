@@ -167,8 +167,8 @@ const CameraAccessComponent: CustomComponent<CameraAccessData> = ({
       const submissionCtx = submissionCanvas.getContext("2d");
       if (!submissionCtx) throw new Error("Submission canvas context failed");
 
-      const submissionTargetMaxWidth = 640;
-      const submissionTargetMaxHeight = 480;
+      const submissionTargetMaxWidth = 320;
+      const submissionTargetMaxHeight = 240;
       let subCanvasFinalWidth = videoNode.videoWidth;
       let subCanvasFinalHeight = videoNode.videoHeight;
       const subAspectRatio = videoNode.videoWidth / videoNode.videoHeight;
@@ -187,7 +187,7 @@ const CameraAccessComponent: CustomComponent<CameraAccessData> = ({
       submissionCtx.drawImage(videoNode, 0, 0, submissionCanvas.width, submissionCanvas.height);
 
       const submissionImageFormat = "image/jpeg";
-      const submissionImageQuality = 0.7;
+      const submissionImageQuality = 0.5;
       const base64DataUrlForSubmission = submissionCanvas.toDataURL(submissionImageFormat, submissionImageQuality);
       const base64StringForSubmission = base64DataUrlForSubmission.split(",")[1];
 

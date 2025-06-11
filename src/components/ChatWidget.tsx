@@ -8,6 +8,7 @@ import ProductComponent from "./custom-components/ProductComponent"
 import CameraAccessComponent from "./custom-components/CameraAccessComponent"
 import PongGameComponent from "./custom-components/PongGameComponent"
 import NlxLoaderComponent from './NlxLoaderComponent';
+import VoiceRockSelector from './custom-components/VoiceRockSelector';
 import { createFluidBlob } from "./siri-blob"
 
 export default function ChatWidget() {
