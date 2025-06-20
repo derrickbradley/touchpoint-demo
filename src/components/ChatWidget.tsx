@@ -1,14 +1,23 @@
 import { useEffect } from 'react'
 import { create } from '@nlxai/touchpoint-ui'
-import MeetingConfirmationCard from './custom-components/MeetingConfirmationCard'
-import ConfirmationCodeComponent from './custom-components/ConfirmationCodeComponent'
-import InfoConfirmationComponent from './custom-components/InfoConfirmationComponent'
-import ConfirmPhoneNumberComponent from './custom-components/ConfirmPhoneNumberComponent'
-import ProductComponent from "./custom-components/ProductComponent"
-import CameraAccessComponent from "./custom-components/CameraAccessComponent"
-import PongGameComponent from "./custom-components/PongGameComponent"
-import NlxLoaderComponent from './NlxLoaderComponent';
+import OrderSummary from "./custom-components/OrderSummary"
 import { createFluidBlob } from "./siri-blob"
+
+import { BaseText, TextButton, Icons } from "@nlxai/touchpoint-ui";
+
+
+
+const SimpleComponent = ({ data }: { data: any }) => (
+  <>
+    <BaseText>{data.message}</BaseText>
+    <TextButton
+      label={data.message}
+      Icon={Icons.ArrowForward}
+      onClick={() => console.log("Clicked!")}
+    />
+  </>
+);
+
 
 export default function ChatWidget() {
   useEffect(() => {
@@ -16,9 +25,9 @@ export default function ChatWidget() {
       try {
         const touchpoint = await create({
           config: {
-            applicationUrl: "https://bots.dev.studio.nlx.ai/c/G0iwvOqW4LUWHvi1F6VUB/k4J0i1569sPgYF92LSopc",
+            applicationUrl: "https://bots.studio.nlx.ai/c/P3hlQW8UOrEo4ond8U80B/ke6U8CX5ObahwgvkbeByr",
             headers: {
-              "nlx-api-key": "EkqbsL2n5xHDPpgNdtIRH=H4--XkpDtF",
+              "nlx-api-key": "JQAamYVOMsE1NG0urOrMo3Jq",
             },
             languageCode: "en-US",
             userId: "5a8019a0-8b0c-454f-ac83-98906f7ddac7",
@@ -31,14 +40,8 @@ export default function ChatWidget() {
             accent: "#AECAFF",
           },
           customModalities: {
-            MeetingConfirmationCard: MeetingConfirmationCard,
-            ConfirmationCode: ConfirmationCodeComponent,
-            InfoConfirmation: InfoConfirmationComponent,
-            ConfirmPhoneNumber: ConfirmPhoneNumberComponent,
-            ProductSelection: ProductComponent,
-            CameraAccess: CameraAccessComponent,
-            PongGame: PongGameComponent,
-            NlxAiMetamorphosisComponent: NlxLoaderComponent
+            SimpleComponent: SimpleComponent,
+            OrderSummary: OrderSummary
 
           },
           colorMode: "dark",

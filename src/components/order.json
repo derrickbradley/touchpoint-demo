@@ -1,0 +1,67 @@
+{
+    "success": true,
+    "data": {
+      "order": {
+        "orderId": "8440e1aa-f30f-4457-aa4c-51fc65a7f3f7",
+        "customerId": "6467171359",
+        "status": "ORDER_STARTED",
+        "items": [
+          {
+            "itemId": "100",
+            "orderItemId": "100-e54af1c0-2893-4f76-8ac7-2d4b052917cd",
+            "name": "Spicy Deluxe Chicken",
+            "category": "Entrees",
+            "price": 5.69,
+            "quantity": 1,
+            "customizations": ["Sweet and sour sauce"],
+            "specialInstructions": "No onions",
+            "nutritionalInfo": {
+              "fat": 0,
+              "sodium": 0,
+              "calories": 0,
+              "carbs": 0,
+              "protein": 0
+            },
+            "sizeName": "Sandwich Only",
+            "description": "Deluxe Spicy Crispy Chicken Sandwich"
+          }
+        ],
+        "subtotal": 5.69,
+        "tax": 0.45520000000000005,
+        "tip": 0,
+        "total": 6.145200000000001,
+        "paymentMethod": {
+            "expiryDate": "08/27",
+            "type": "CREDIT_CARD",
+            "cardNumber": "**** **** **** 4523",
+            "cardholderName": "Maria Garcia"
+        },
+        "paymentStatus": "pending",
+        "orderType": "dine-in",
+        "deliveryAddress": {
+            "zipCode": "11215",
+            "country": "USA",
+            "state": "NY",
+            "city": "Brooklyn",
+            "street": "456 Family Lane"
+          },
+        "estimatedReadyTime": null,
+        "actualReadyTime": null,
+        "specialInstructions": "",
+        "createdAt": "2025-06-19T04:45:08.212Z",
+        "updatedAt": "2025-06-19T04:48:20.154Z",
+        "restaurant": {
+            "zipCode": "11215",
+            "country": "USA",
+            "state": "NY",
+            "city": "Brooklyn",
+            "street": "456 Family Lane"
+        }
+      },
+      "queryInfo": {
+        "queriedBy": "orderId",
+        "orderId": "8440e1aa-f30f-4457-aa4c-51fc65a7f3f7",
+        "customerId": "6467171359"
+      }
+    }
+  }
